@@ -1,0 +1,13 @@
+captum
+lime
+IPython
+matplotlib
+cycler
+torch
+scikit-learn
+pandas
+numpy
+transformers
+arabert
+evaluate
+-e .

@@ -1,0 +1,5 @@
+#!/Users/yousrachahinezhadjazzem/Documents/ACLing2024_46/XAI_Eval_Arabic_LMs/venv/bin/python3.10
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()

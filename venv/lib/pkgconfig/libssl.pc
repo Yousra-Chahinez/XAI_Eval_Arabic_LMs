@@ -1,0 +1,11 @@
+prefix=/Users/yousrachahinezhadjazzem/Documents/ACLing2024_46/XAI_Eval_Arabic_LMs/venv
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: OpenSSL-libssl
+Description: Secure Sockets Layer and cryptography libraries
+Version: 3.0.15
+Requires.private: libcrypto
+Libs: -L${libdir} -lssl
+Cflags: -I${includedir}
