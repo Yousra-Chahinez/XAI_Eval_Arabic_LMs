@@ -4,7 +4,7 @@ import argparse
 from src.components.data_loader import HardDataset  # Assuming `data_loader` is under `src.components`
 from src.components.data_processor import DataProcessor
 from src.components.model_loader import ModelLoader
-# from src.components.model_trainer import ModelTrainer
+from src.components.model_trainer import ModelTrainer
 from src.utils import set_seed  # Utility function for seed setting
 from src.exception import CustomException
 
@@ -18,7 +18,7 @@ def main(args):
         print("Device:", device)
 
         # Load the dataset
-        dataset = HardDataset(args.dataset_path)
+        dataset = HardDataset(args.dataset_path, args.seed)
         dataset.load_data()
 
         # Reduce the data size for computational efficiency (Optional)
@@ -32,7 +32,7 @@ def main(args):
         model_loader.setup()  # Ensure that tokenizer, config, and model are loaded
 
         # Initialize the data processor and preprocess the data
-        data_processor = DataProcessor(reduced_df, model_name=model_loader.model_name, task_type=args.task_type)
+        data_processor = DataProcessor(reduced_df, model_name=model_loader.model_name, seed=args.seed, task_type=args.task_type)
         data_processor.preprocess_data()
 
         # Split the data into training, validation, and test sets
@@ -44,18 +44,17 @@ def main(args):
         test_dataset = test_dataset.map(data_processor.tokenize_data, batched=True)
 
         # Retrieve the tokenizer from ModelLoader
-        # tokenizer = model_loader.tokenizer
+        tokenizer = model_loader.tokenizer
 
         # Initialize the trainer with the processed data and model
-        # trainer = ModelTrainer(model_loader=model_loader, train_dataset=train_dataset, val_dataset=val_dataset, tokenizer=tokenizer)
+        trainer = ModelTrainer(model_loader=model_loader, train_dataset=train_dataset, val_dataset=val_dataset, tokenizer=tokenizer)
 
         # Start the training process
-        # trainer.train()
+        trainer.train()
 
         # Evaluate the model on the test dataset
-        # evaluation_results = trainer.evaluate(test_dataset)
-        # print("Evaluation Results:", evaluation_results)
-
+        evaluation_results = trainer.evaluate(test_dataset)
+        print("Evaluation Results:", evaluation_results)
     except Exception as e:
         raise CustomException(e, sys)
 

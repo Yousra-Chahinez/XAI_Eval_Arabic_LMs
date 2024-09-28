@@ -6,13 +6,11 @@ from datasets import Dataset
 from sklearn.model_selection import train_test_split
 from src.exception import CustomException
 
-SEED = 42
-
 class DataProcessor:
-    def __init__(self, df, model_name, seed=SEED, task_type="ASA"):
+    def __init__(self, df, model_name, seed, task_type="ASA"):
         self.df = df
         self.model_name = model_name
-        self.seed = SEED
+        self.seed = seed
         self.task_type = task_type
         self.preprocessor = ArabertPreprocessor(model_name=model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)

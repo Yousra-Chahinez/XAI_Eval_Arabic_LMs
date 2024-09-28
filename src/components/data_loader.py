@@ -1,10 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import argparse
 
-SEED = 42
 class HardDataset:
-    def __init__(self, data_path, seed=SEED):
+    def __init__(self, data_path, seed):
         self.data_path=data_path
         self.seed=seed
         self.df=None

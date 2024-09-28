@@ -1,13 +1,15 @@
-captum
-lime
+captum==0.7.0
+lime==0.2.0.1
 IPython
-matplotlib
-cycler
-torch
-scikit-learn
-pandas
-numpy
-transformers
-arabert
-evaluate
+matplotlib==3.9.2
+cycler==0.12.1
+torch==2.2.2
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==1.24.0
+transformers==4.45.1
+arabert==1.0.1
+evaluate==0.4.3
+accelerate==0.34.2
+optuna==4.0.0
 -e .
