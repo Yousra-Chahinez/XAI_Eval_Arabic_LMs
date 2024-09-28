@@ -32,37 +32,38 @@ def format_duration(total_time):
     minutes, seconds = divmod(remainder, 60)
     return "{} hours, {} minutes, {} seconds".format(hours, minutes, seconds)
 
+class Visualizer:
+    def __init__(self, cmap='seismic'):
+        self.cmap = cmap
 
-def hlstr(string, color='white', font_size='21px', font_family='Times New Roman, Times, serif'):
-    """
-    Return HTML markup highlighting text with the desired color.
-    """
-    return f"<mark style='background-color:{color}; font-size:{font_size}; font-family:{font_family}'>{string}</mark> "
+    def hlstr(self, string, color='white', font_size='21px', font_family='Times New Roman, Times, serif'):
+        """
+        Return HTML markup highlighting text with the desired color.
+        """
+        return f"<mark style='background-color:{color}; font-size:{font_size}; font-family:{font_family}'>{string}</mark> "
 
-def colorize(attrs, cmap='seismic'):
-    """
-    Compute hex colors based on the attributions for a single instance.
-    Uses a diverging colorscale by default and normalizes and scales
-    the colormap so that colors are consistent with the attributions.
-    """
+    def colorize(self, attrs):
+        """
+        Compute hex colors based on the attributions for a single instance.
+        Uses a diverging colorscale by default and normalizes and scales
+        the colormap so that colors are consistent with the attributions.
+        """
+        cmap_bound = np.max(np.abs(attrs))
+        norm = plt.Normalize(vmin=-cmap_bound, vmax=cmap_bound)
+        cmap = plt.get_cmap(self.cmap)  # Use get_cmap to fetch the colormap
 
-    cmap_bound = np.max(np.abs(attrs))
-    norm = plt.Normalize(vmin=-1, vmax=1)
-    cmap = plt.colormaps[cmap]
+        # Now compute hex values of colors
+        colors = [rgb2hex(cmap(norm(attr))) for attr in attrs]
 
-    # now compute hex values of colors
-    colors = [rgb2hex(cmap(norm(attr))) for attr in attrs]
+        return colors
 
-    return colors
+    def visualize(self, tokens, explanation):
+        """
+        Generate HTML with highlighted words based on input gradients.
+        """
+        # Colorize the input gradients
+        colors = self.colorize(explanation)
+        highlighted_text = " ".join([self.hlstr(token, color) for token, color in zip(tokens, colors)])
 
-def visualize(tokens, explanation, cmap='seismic'):
-    """
-    Generate HTML with highlighted words based on input gradients.
-    """
-
-    # Colorize the input gradients
-    colors = colorize(explanation, cmap)
-    highlighted_text = " ".join([hlstr(token, color) for token, color in zip(tokens, colors)])
-
-    # Display the HTML
-    display(HTML(highlighted_text))
+        # Display the HTML
+        display(HTML(highlighted_text))
