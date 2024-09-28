@@ -8,7 +8,9 @@ from src.components.model_trainer import ModelTrainer
 from src.utils import set_seed  # Utility function for seed setting
 from src.exception import CustomException
 from src.utils import Visualizer
-from src.explanation_methods.gradients_methods import vanilla_grad, gradient_input, IntegratedGradients, get_gradients  # Import your explanation methods
+from src.explanation_methods.gradients_methods import vanilla_grad, gradient_input, IntegratedGradients, get_gradients  
+from src.explanation_methods.perturbation_methods import LIMEExplainer, SHAPExplainer
+
 
 # Compute explanation for a single instance using each XAI method
 def run_explanation(args, model_loader, test_dataset):
@@ -35,6 +37,13 @@ def run_explanation(args, model_loader, test_dataset):
             ig = IntegratedGradients(model=model_loader.model, device=args.device, n_steps=args.n_steps)
             print(input_ids[0])
             attributions = ig.compute_integrated_gradients(input_ids=input_ids[0], attention_mask=attention_mask[0], target_class_idx=target_class_idx)
+        elif args.explanation_method == "lime":
+            LIME_explainer = LIMEExplainer(model_loader, device=args.device)
+            attributions = LIME_explainer.lime_explainer(selected_instance["text"], args.task_type)
+            print(attributions)
+        elif args.explanation_method == "shap_vs":
+            SHAP_explainer = SHAPExplainer(model_loader, device=args.device)
+            attributions = SHAP_explainer.shap_explainer(input_ids, attention_mask, target_class_idx)
         else:
             raise ValueError(f"Unsupported explanation method: {args.explanation_method}")
 
@@ -120,7 +129,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
     parser.add_argument('--reduce_data', action='store_true', help='Flag to indicate if the data should be reduced for computational efficiency')
     parser.add_argument('--reduce_size', type=int, default=17000, help='Number of samples to reduce the dataset to (only used if --reduce_data is set)')
-    parser.add_argument('--explanation_method', type=str, default="vanilla_grad", choices=["vanilla_grad", "gradient_input", "integrated_gradients"], help='Explanation method to use')
+    parser.add_argument('--explanation_method', type=str, default="vanilla_grad", choices=["vanilla_grad", "gradient_input", "integrated_gradients", "lime", "shap_vs"], help='Explanation method to use')
     parser.add_argument('--instance_index', type=int, default=0, help='Index of the instance to explain from the test dataset')
     parser.add_argument('--target_class', type=int, default=1, help='Target class index for explanation')
     parser.add_argument('--n_steps', type=int, default=50, help='Number of steps for Integrated Gradients method')

@@ -24,15 +24,6 @@ class LIMEExplainer:
         self.device = device
 
     def predictor(self, token_ids_list):
-        """
-        Predictor function required by LIME for generating predictions.
-        
-        Parameters:
-            token_ids_list (list): List of tokenized input strings.
-
-        Returns:
-            np.ndarray: Array of logits for each input instance.
-        """
         try:
             self.model.eval()
             all_logits = []
@@ -48,24 +39,12 @@ class LIMEExplainer:
                     outputs = self.model(input_ids.long(), attention_mask=input_ids.long() > 0)
                     logits = outputs.logits[0].detach().cpu().numpy().tolist()
                     all_logits.append(logits)
-
             return np.array(all_logits)
         except Exception as e:
             logging.error("Error in LIME predictor function")
             raise CustomException(e, sys)
 
-    def explain_prediction(self, text, task, max_length=128):
-        """
-        Generate LIME explanations for a given text based on the model's predictions.
-
-        Parameters:
-            text (str): Input text or a pair of texts for the task.
-            task (str): Type of task ('ASA' for Arabic Sentiment Analysis, 'Q2Q' for question-to-question).
-            max_length (int): Maximum length of tokens for input.
-
-        Returns:
-            list: Saliency values corresponding to each token.
-        """
+    def lime_explainer(self, text, task, max_length=128):
         try:
             # Encode the text based on the task type
             if task == 'ASA':
@@ -130,7 +109,7 @@ class SHAPExplainer:
             logging.error("Error in SHAP predictor function")
             raise CustomException(e, sys)
 
-    def explain_prediction(self, input_ids, attention_mask, target_class_idx):
+    def shap_explainer(self, input_ids, attention_mask, target_class_idx):
         """
         Generate SHAP explanations for a given input based on the model's predictions.
 
