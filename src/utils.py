@@ -31,7 +31,6 @@ def format_duration(total_time):
     hours, remainder = divmod(time_delta.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     return "{} hours, {} minutes, {} seconds".format(hours, minutes, seconds)
-
 class Visualizer:
     def __init__(self, cmap='seismic'):
         self.cmap = cmap
