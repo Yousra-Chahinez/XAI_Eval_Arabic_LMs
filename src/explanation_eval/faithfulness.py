@@ -97,14 +97,3 @@ class FaithfulnessEvaluator:
         probas = F.softmax(outputs.logits, dim=-1)
         pred = torch.argmax(probas, dim=-1).cpu().item()
         return pred
-
-# Usage example
-if __name__ == "__main__":
-    # Initialize your model, dataset, and saliency_scores_path here
-    model = ...  # Your model
-    dataset = ...  # Your dataset
-    saliency_scores_path = "/content/grad_input-arabertv2-sa.json"
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    evaluator = FaithfulnessEvaluator(model, dataset, saliency_scores_path, device)
-    evaluator.eval_faithfulness()
