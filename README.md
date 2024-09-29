@@ -19,6 +19,7 @@ Clone the repository and install the required dependencies:
 git clone https://github.com/Yousra-Chahinez/XAI_Eval_Arabic_LMs.git
 cd XAI_Eval_Arabic_LMs
 pip install -r requirements.txt
+```
 
 ## Repository Structure
 XAI_Eval_Arabic_LMs/
@@ -50,13 +51,14 @@ XAI_Eval_Arabic_LMs/
 To train the model and evaluate its performance, use the following command:
 ```bash
 python main.py train --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type ASA --seed 42
+```
 
 ## Generating Explanations
 To generate explanations for a specific instance in the test dataset after training, use the command below:
 
 ```bash
 python main.py explain --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type ASA --explanation_method vanilla_grad --instance_index 0 --target_class 1
-
+```
 
 ## Citation
 
@@ -69,7 +71,7 @@ If you use this repository or our paper in your work, please consider citing us 
   booktitle={ACLing 2024},
   year={2024}
 }
+```
 
 ## Contact
-
 For inquiries or collaboration opportunities, please reach out via email at [hadjazzem.yousra@gmail.com](mailto:hadjazzem.yousra@gmail.com).
