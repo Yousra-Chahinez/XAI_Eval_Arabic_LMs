@@ -20,38 +20,38 @@ git clone https://github.com/Yousra-Chahinez/XAI_Eval_Arabic_LMs.git
 cd XAI_Eval_Arabic_LMs
 pip install -r requirements.txt
 
-# Repository Structure
+## Repository Structure
 XAI_Eval_Arabic_LMs/
 │
-├── data/                     # Datasets for ASA and Q2Q tasks
-│   ├── ASA_human_annotations/ # Human annotations processed to rationales
+├── data/                  
+│   ├── ASA_human_annotations/ 
 │   └── <other datasets>      
 │
 ├── src/
-│   ├── components/           # Contains essential scripts for data and model processing
+│   ├── components/           
 │   │   ├── data_loader.py
 │   │   ├── data_processor.py
 │   │   ├── model_loader.py
 │   │   └── model_trainer.py
 │   │
-│   ├── explanation_methods/   # Implementations of various explanation methods
+│   ├── explanation_methods/   
 │   │   ├── perturbation_methods.py
 │   │   └── gradient_methods.py
 │   │
-│   └── explanation_eval/      # Scripts for evaluating faithfulness and plausibility metrics
+│   └── explanation_eval/      
 │       ├── faithfulness.py
 │       └── plausibility.py
 │
-├── utils/                    # Common functions and visualization scripts
+├── utils/                  
 │
-└── main.py                   # Main script to train models and generate explanations
+└── main.py                   
 
-# Training the model
+## Training the model
 To train the model and evaluate its performance, use the following command:
 ```bash
 python main.py train --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type ASA --seed 42
 
-# Generating Explanations
+## Generating Explanations
 To generate explanations for a specific instance in the test dataset after training, use the command below:
 
 ```bash
