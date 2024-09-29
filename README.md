@@ -67,7 +67,7 @@ python main.py explain --model_name "aubmindlab/bert-base-arabertv2" --dataset_p
 If you use this repository or our paper in your work, please consider citing us as follows:
 
 ```bibtex
-@inproceedings{your_citation_key,
+@inproceedings{citation_key,
   title={Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques},
   author={Your Name},
   booktitle={ACLing 2024},
