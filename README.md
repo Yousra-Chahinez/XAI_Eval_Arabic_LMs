@@ -22,6 +22,7 @@ pip install -r requirements.txt
 ```
 
 ## Repository Structure
+```bash
 XAI_Eval_Arabic_LMs/
 │
 ├── data/                  
@@ -46,6 +47,7 @@ XAI_Eval_Arabic_LMs/
 ├── utils/                  
 │
 └── main.py                   
+```
 
 ## Training the model
 To train the model and evaluate its performance, use the following command:
