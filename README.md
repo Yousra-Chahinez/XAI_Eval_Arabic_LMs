@@ -1,53 +1,75 @@
 # Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques
 
-This repository contains the code and resources for our paper titled "**Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques**", accepted at ACLing 2024.
+This repository contains the code and resources for the paper "**Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques**," accepted at ACLing 2024.
 
-# Overview
+## Overview
 
-In this paper, we evaluate various explanation methods based on their faithfulness and plausibility in the context of Arabic Language Models. We fine-tune Arabic language models on two specific tasks: Arabic Sentiment Analysis (ASA) and Semantic Question Similarity (Q2Q). For each combination of model and task, we apply several explanation methods and then evaluate them using the following criteria:
-- Faithfulness: Measured using the Area Under the Threshold-Performance Curve (AUC-TP).
-- Plausibility: Measured using Mean Average Precision (MAP).
+In this study, we evaluate various explanation methods based on their **faithfulness** and **plausibility** within the context of Arabic Language Models (LMs). We fine-tune Arabic LMs on two specific tasks: **Arabic Sentiment Analysis (ASA)** and **Semantic Question Similarity (Q2Q)**. For each model-task combination, we apply several explanation methods and evaluate them using:
 
-# Datasets 
-- Hotel Arabic-Reviews Dataset (HARD): Used for the Arabic Sentiment Analysis (ASA) task.
-- Mawdoo3 Q2Q Dataset (MQ2Q): Used for the Semantic Question Similarity (Q2Q) task.
+- **Faithfulness**: Measured via the Area Under the Threshold-Performance Curve (AUC-TP).
+- **Plausibility**: Measured using Mean Average Precision (MAP).
 
-# Models
-- AraBERT
-- AraGPT2
+This repository provides a comprehensive pipeline for fine-tuning Arabic LMs, generating explanations, and evaluating them in Arabic NLP contexts. It supports various explanation methods, including Vanilla Gradient, Gradient Input, Integrated Gradients, LIME, and SHAP.
 
-# Explanation Methods
-1. Gradient-based methods: Saliency, Input*Gradient, Integrated Gradients
-2. Perturbation-based methods: Local Interpretable Model-Agnostic Explanations (LIME). SHapley Value Sampling (SHAP_VS): Estimates Shapley values using random sampling.
+## Installation
+
+Clone the repository and install the required dependencies:
+
+```bash
+git clone https://github.com/Yousra-Chahinez/XAI_Eval_Arabic_LMs.git
+cd XAI_Eval_Arabic_LMs
+pip install -r requirements.txt
 
 # Repository Structure
-- data/: Contains the datasets for ASA and Q2Q tasks.
-- models/: 
-- explanation_methods/: Implementations of different explanation methods.
-- evaluation_eval/: Scripts for evaluating faithfulness and plausibility.
-- utils/: Scripts for common functions and visualization.
+XAI_Eval_Arabic_LMs/
+│
+├── data/                     # Datasets for ASA and Q2Q tasks
+│   ├── ASA_human_annotations/ # Human annotations processed to rationales
+│   └── <other datasets>      
+│
+├── src/
+│   ├── components/           # Contains essential scripts for data and model processing
+│   │   ├── data_loader.py
+│   │   ├── data_processor.py
+│   │   ├── model_loader.py
+│   │   └── model_trainer.py
+│   │
+│   ├── explanation_methods/   # Implementations of various explanation methods
+│   │   ├── perturbation_methods.py
+│   │   └── gradient_methods.py
+│   │
+│   └── explanation_eval/      # Scripts for evaluating faithfulness and plausibility metrics
+│       ├── faithfulness.py
+│       └── plausibility.py
+│
+├── utils/                    # Common functions and visualization scripts
+│
+└── main.py                   # Main script to train models and generate explanations
 
-
-# Arabic NLP Model Training and Evaluation Pipeline
-
-This project provides scripts for training Arabic NLP models and constructing human rationales. Below are examples of how to run the provided scripts from the command line.
-
-## Training Script
-
-To train a model on your dataset, use the following command:
+# Training the model
+To train the model and evaluate its performance, use the following command:
 ```bash
-python main.py --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type "ASA" --reduce_data --reduce_size 17000
-```
-To construct human ratioanles from human annotations, use the following command:
-The output of this command is on data/ASA_human_ratioanles.csv
+python main.py train --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type ASA --seed 42
+
+# Generating Explanations
+To generate explanations for a specific instance in the test dataset after training, use the command below:
+
 ```bash
-python construct_rationale.py --model_name aubmindlab/bert-base-arabertv2 --csv_path data/annotations.csv --output_path data/processed_rationales.csv
-```
+python main.py explain --model_name "aubmindlab/bert-base-arabertv2" --dataset_path "data/HARD_balanced-reviews.tsv" --task_type ASA --explanation_method vanilla_grad --instance_index 0 --target_class 1
 
 
-# Citation
-If you use this repository or our paper in your work, please consider citing:
+## Citation
 
-# Contact
-For any inquiries or collaborations, feel free to reach out to us at \email{hadjazzem.yousra@gmail}.com.
+If you use this repository or our paper in your work, please consider citing us as follows:
 
+```bibtex
+@inproceedings{your_citation_key,
+  title={Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques},
+  author={Your Name},
+  booktitle={ACLing 2024},
+  year={2024}
+}
+
+## Contact
+
+For inquiries or collaboration opportunities, please reach out via email at [hadjazzem.yousra@gmail.com](mailto:hadjazzem.yousra@gmail.com).
