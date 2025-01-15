@@ -109,7 +109,6 @@ class IntegratedGradients:
 
             norm = np.linalg.norm(igs, ord=2)
             igs = igs / norm
-            print(igs)
             return igs[0]
         except Exception as e:
             raise CustomException(e, sys)
