@@ -23,7 +23,7 @@ class FaithfulnessEvaluator:
 
     def eval_faithfulness(self):
         self.model.eval()
-        saliency_data = self.load_saliency_scores(self.saliency_scores_path)
+        saliency_data = load_saliency_scores(self.saliency_scores_path)
         thresholds = list(range(0, 110, 10))
         model_scores = []
         y_pred = []
@@ -33,8 +33,8 @@ class FaithfulnessEvaluator:
             for entry in tqdm(saliency_data, desc=f'Computing faithfulness for threshold {threshold}%'):
                 saliencies = entry['saliences']
                 token_ids = self.dataset[entry['index']]["input_ids"]
-                new_token_ids = self.perturb_salient_tokens(token_ids, saliencies, threshold, mask=True)
-                updated_y_pred_label = self.predict(new_token_ids)
+                new_token_ids = perturb_salient_tokens(token_ids, saliencies, threshold, mask=True)
+                updated_y_pred_label = predict(new_token_ids)
                 updated_y_pred.append(updated_y_pred_label)
 
                 if threshold == 0:
