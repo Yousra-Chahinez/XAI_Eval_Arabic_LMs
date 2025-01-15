@@ -74,6 +74,3 @@ If you use this repository or our paper in your work, please consider citing us 
   year={2024}
 }
 ```
-
-## Contact
-For inquiries or collaboration opportunities, please reach out via email at [hadjazzem.yousra@gmail.com](mailto:hadjazzem.yousra@gmail.com).
