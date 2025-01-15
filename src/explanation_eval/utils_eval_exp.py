@@ -1,4 +1,4 @@
-def load_saliency_scores(self, path):
+def load_saliency_scores(path):
         with open(path, 'r') as file:
             data = [json.loads(line) for line in file]
         return data
