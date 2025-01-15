@@ -1,15 +1,3 @@
-import sys
-import ast
-import pandas as pd
-import numpy as np
-import torch
-from sklearn.metrics import average_precision_score
-from collections import Counter
-from arabert.preprocess import ArabertPreprocessor
-from src.components.model_loader import ModelLoader
-from src.exception import CustomException
-import argparse
-
 class RationaleProcessor:
     def __init__(self, model_name, csv_path, task_type, max_length=128):
         self.model_name = model_name
@@ -52,30 +40,29 @@ class RationaleProcessor:
         majority_words = [word for word, count in word_counts.items() if count >= 2]  # Majority rule
         return majority_words
     
-    def create_binary_scores(self, row):
+    def create_binary_scores(self, text_input, majority_vote):
         """Creates binary scores after tokenizing input text and human majority-voted text."""
         if self.task_type == "ASA":
             full_inputs = self.tokenizer(
-                row['text'],
+                text_input,
                 max_length=self.max_length, truncation=True,
                 add_special_tokens=True, return_attention_mask=True)
         elif self.task_type == "Q2Q":
             full_inputs = self.tokenizer(
-                row['question1'], row['question2'],
+                text_input[0], text_input[1],
                 max_length=self.max_length, truncation=True,
                 add_special_tokens=True, return_attention_mask=True)
 
         full_input_ids = full_inputs['input_ids']
         # Tokenize the majority-voted text
-        majority_words = row['majority_vote']
-        majority_txt = ' '.join(majority_words)
+        majority_txt = ' '.join(majority_vote)
         majority_words_token_ids = self.tokenizer.encode(majority_txt, add_special_tokens=False)
 
         # Create binary scores by comparing token IDs
         binary_scores = [1 if token in majority_words_token_ids else 0 for token in full_input_ids]
-        return full_input_ids,  binary_scores
+        return full_input_ids, binary_scores
 
-    def construct_ratioanles(self, tokenizer):
+    def construct_rationales(self):
         try:
             """Processes annotations by splitting, preprocessing, and creating binary scores."""
             # Split the rationale columns into individual words
@@ -90,7 +77,9 @@ class RationaleProcessor:
             self.df_annotations['majority_vote'] = self.df_annotations[['annotation_1', 'annotation_2', 'annotation_3']].apply(self.majority_vote, axis=1)
 
             # Create binary scores
-            self.df_annotations['human_rationales'] = self.df_annotations.apply(lambda row: self.create_binary_scores(row, tokenizer), axis=1)
+            self.df_annotations[['input_ids', 'human_rationales']] = self.df_annotations.apply(
+                lambda row: pd.Series(self.create_binary_scores(row['preprocessed_text'], row['majority_vote'])), axis=1
+            )
             print("Human rationales constructed successfully.")
         except Exception as e:
             raise CustomException(e, sys)
@@ -127,7 +116,7 @@ class RationaleProcessor:
         """Computes the Average Precision (AP) for each row and returns the Mean Average Precision (MAP)."""
         # Compute AP scores for each row in the DataFrame.
         self.df_annotations[f'ap_{saliency_col}'] = self.df_annotations.apply(
-            lambda row: self.compute_ap(row, saliency_col), axis=1
+            lambda row: self.compute_AP(row, saliency_col), axis=1
         )
 
         # Calculate the Mean Average Precision (MAP)
@@ -140,43 +129,3 @@ class RationaleProcessor:
         self.df_annotations = self.df_annotations.drop('preprocessed_text', axis=1)
         self.df_annotations.to_csv(output_path, index=False)
         print(f"Results saved to {output_path}")
-
-def main(args):
-    try:
-        # Initialize RationaleProcessor
-        rationale_processor = RationaleProcessor(
-            model_name=args.model_name,
-            csv_path=args.csv_path,
-            task_type=args.task_type,
-            max_length=args.max_length
-        )
-
-        # Load data and model
-        rationale_processor.load_data()
-        rationale_processor.load_model()
-
-        # Construct human rationales
-        rationale_processor.construct_human_rationales()
-
-        # Evaluate plausibility
-        rationale_processor.evaluate_plausibility(saliency_col=args.saliency_col)
-
-        # Save the output to CSV
-        rationale_processor.save_to_csv(args.output_path)
-
-    except Exception as e:
-        raise CustomException(e, sys)
-    
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Construct and Evaluate Human Rationales from Annotations")
-    parser.add_argument('--model_name', type=str, required=True, help='Pretrained Model Name')
-    parser.add_argument('--csv_path', type=str, required=True, help='Path to the CSV file containing annotations')
-    parser.add_argument('--task_type', type=str, required=True, choices=["ASA", "Q2Q"], help='Task type')
-    parser.add_argument('--saliency_col', type=str, required=True, help='Column name for model saliency scores')
-    parser.add_argument('--output_path', type=str, required=True, help='Path to save the output CSV with rationales')
-    parser.add_argument('--max_length', type=int, default=128, help='Maximum length for tokenization (default: 128)')
-
-    args = parser.parse_args()
-    main(args)
-
-
