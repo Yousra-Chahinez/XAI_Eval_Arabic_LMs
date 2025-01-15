@@ -1,3 +1,8 @@
+def load_saliency_scores(self, path):
+        with open(path, 'r') as file:
+            data = [json.loads(line) for line in file]
+        return data
+
 def perturb_salient_tokens(token_ids, saliencies, threshold, tokenizer, mask=True):
     """
     Mask the most salient tokens in a sequence based on given saliency scores and a threshold.
