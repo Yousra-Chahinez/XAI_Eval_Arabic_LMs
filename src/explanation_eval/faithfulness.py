@@ -11,8 +11,9 @@ from explanation_eval.utils_eval_exp import load_saliency_scores, perturb_salien
 
 
 class FaithfulnessEvaluator:
-    def __init__(self, model, dataset, saliency_scores_path, device='cpu'):
+    def __init__(self, model, tokenizer, dataset, saliency_scores_path, device='cpu'):
         self.model = model
+        self.tokenizer = tokenizer
         self.dataset = dataset
         self.saliency_scores_path = saliency_scores_path
         self.device = device
@@ -33,8 +34,8 @@ class FaithfulnessEvaluator:
             for entry in tqdm(saliency_data, desc=f'Computing faithfulness for threshold {threshold}%'):
                 saliencies = entry['saliences']
                 token_ids = self.dataset[entry['index']]["input_ids"]
-                new_token_ids = perturb_salient_tokens(token_ids, saliencies, threshold, mask=True)
-                updated_y_pred_label = predict(new_token_ids)
+                new_token_ids = perturb_salient_tokens(token_ids, saliencies, threshold, self.tokenizer, mask=True)
+                updated_y_pred_label = updated_y_pred_label = predict(self.model, new_token_ids, self.device)
                 updated_y_pred.append(updated_y_pred_label)
 
                 if threshold == 0:
