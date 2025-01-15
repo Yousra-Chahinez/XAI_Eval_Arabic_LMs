@@ -7,6 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader, TensorDataset
 from tqdm import tqdm
+from explanation_eval.utils_eval_exp import perturb_salient_tokens, predict
 
 
 class FaithfulnessEvaluator:
