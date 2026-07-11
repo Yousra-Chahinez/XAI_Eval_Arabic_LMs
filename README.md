@@ -1,6 +1,8 @@
 # Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques
 
-This repository contains the code and resources for the paper "**Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques**," accepted at ACLing 2024.
+This repository contains the code and resources for the paper "**[Exploring Explainability in Arabic Language Models: An Empirical Analysis of Techniques](https://www.sciencedirect.com/science/article/pii/S1877050924029958)**" accepted at ACLing 2024.
+Paper: https://your-paper-link.com
+
 
 ## Overview
 
